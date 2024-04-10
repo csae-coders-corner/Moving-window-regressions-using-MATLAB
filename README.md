@@ -7,13 +7,13 @@ I am going to walk you through the steps of running a moving window regression u
 
 First, let us set the working directory and load the data set. 
 
-clear
+**clear
 cd('/MATLAB Drive/Published')
-load lab6_data_AustraliaRainfall.mat
+load lab6_data_AustraliaRainfall.mat**
 
 Second, we plot the mean annual rainfall in both January and June. We compute the mean annual rainfall by taking the means across the 3rd dimension (in this case, “year”) of the rainfall array, since we want the mean across years.
 
-%Plotting average rainfall for January and June 
+**%Plotting average rainfall for January and June 
 figure
 subplot(1,2,1);
 imagesc(mean(AUSrain.rainfall(:,:,:,1), 3, 'omitnan'));
@@ -36,7 +36,7 @@ ylabel('Latitude', 'FontSize', 16);
 caxis ([0 300]);
 colorbar;
 box off; 
-print('-djpeg100','Jan_Jun_Avg_Rainfall');
+print('-djpeg100','Jan_Jun_Avg_Rainfall');**
 
 ![Window 1](https://github.com/csae-coders-corner/Moving-window-regressions-using-MATLAB/assets/148211163/610d13ed-eeb7-42ed-bbfa-f758e75051dd)
 
@@ -44,13 +44,13 @@ We can see from the figures above that the North gets on average more rainfall i
 
 Now, the fun stuff - we run the moving window regression! The equation we want to estimate is: 
 
-〖Mean rainfall in June 〗_(lon-s:lon+s,   lat-s:lat+s)= 〖α 〗_(lon,lat)  + 〖β 〗_(lon,lat)  * 〖Mean rainfall in January 〗_(lon-s:lon+s,   lat-s:lat+s)+ 〖e 〗_(lon-s:lon+s,   lat-s:lat+s)
+**〖Mean rainfall in June 〗_(lon-s:lon+s,   lat-s:lat+s)= 〖α 〗_(lon,lat)  + 〖β 〗_(lon,lat)  * 〖Mean rainfall in January 〗_(lon-s:lon+s,   lat-s:lat+s)+ 〖e 〗_(lon-s:lon+s,   lat-s:lat+s)**
 
 We estimate α  and  β for every point (lon, lat) on the raster. We assume a window of s = 5.
 
 We choose a point (a,b) in the grid where rasters are located. We can think of a raster as a 2 dimensional grid. Using these rasters, we select the window around our point (a,b). The size of the window depends on how many pixels around the point (a,b) we want to consider in each local regression. We then reshape the data to be able to use it in an OLS regression. We then estimate a linear regression with a constant term using a subset of our data. For each subset, we extract a slope coefficient “beta”. We save the beta corresponding to the point (a,b). Then, we repeat the above steps for every point in the raster. By varying the size of the window we can vary the area around (a,b) that we consider for each local regression. We use a window of size 5, which means we have ((5*2+1)^2) = 121 points in each local regression.
 
-% Running the moving window regressions 
+**% Running the moving window regressions 
 %Create variables for the mean annual rainfall
 Average_rainfall_Jan = mean(AUSrain.rainfall(:,:,:,1), 3, 'omitnan'); 
 Average_rainfall_June = mean(AUSrain.rainfall(:,:,:,6), 3, 'omitnan');
@@ -71,16 +71,16 @@ beta(i,j) = coef(2,1); %saving the betas
 end
 end
 %create a new dataset with a "lat", "lon" and corresponding "beta"
-betafield = struct ('beta', beta, 'lat', AUSrain.lat, 'lon', AUSrain.lon);
+betafield = struct ('beta', beta, 'lat', AUSrain.lat, 'lon', AUSrain.lon);**
 
 Note, when you run the above code you may notice that you get an error that says "Warning: X is rank deficient to within machine precision". This means that, for some of the local regressions there isn't enough data to estimate the equation. Don’t panic, this is simply because we include points in the ocean In the regression above.
 
 In our dataset, there is no rainfall data for the oceans (ocean pixels have values of zero across months and years). So, the oceans have rainfall = 0 but we have calculated beta coefficients for ocean pixels too. So since we are regressing across zeroes, it gives the above error for all ocean points. Hence, we need to mask out the ocean so we don’t falsely show a relationship between January and June rainfall for a pixel that is really just a zero. We do this below.
 
-%create a new dataset with a "lat", "lon" and corresponding "beta"
-field = struct ('beta', beta, 'lat', AUSrain.lat, 'lon', AUSrain.lon);
+**%create a new dataset with a "lat", "lon" and corresponding "beta"
+field = struct ('beta', beta, 'lat', AUSrain.lat, 'lon', AUSrain.lon);**
 
-%mask out the oceans 
+**%mask out the oceans 
 %Create a variable summing the rainfall across months for any year
 AUSrain.annual = sum(AUSrain.rainfall(:,:,1,:), 4);
 for i = 1:length(AUSrain.lat)
@@ -91,13 +91,13 @@ for i = 1:length(AUSrain.lat)
            land(i,j) =1;
        end
    end
-end
+end**
 
-field.betafinal = field.beta .* land;
+**field.betafinal** **=** **field.beta** **.*** **land;**
 
 Lastly, we plot the beta coefficients across space. Note, we only plot the beta coefficients for “land” where we have data. The points on the ratser which are ocean are coded as “NaN” and plotted as dark blue in the map below.  
 
-%plot beta coeff
+**%plot beta coeff
 figure;
 imagesc(field.lon, field.lat, field.betafinal)
 axis xy; axis equal; axis tight
@@ -106,7 +106,7 @@ xlabel('Longitude', 'FontSize', 16);
 ylabel('Latitude', 'FontSize', 16);
 caxis ([-1 3]);
 colorbar ;
-print('-djpeg100','Moving Window Regression Coefficients');
+print('-djpeg100','Moving Window Regression Coefficients');**
 
 ![Window 2](https://github.com/csae-coders-corner/Moving-window-regressions-using-MATLAB/assets/148211163/49e20941-51a0-456a-a506-3ecc94ec7171)
 
