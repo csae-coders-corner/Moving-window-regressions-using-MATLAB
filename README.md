@@ -1,3 +1,6 @@
+
+![CC Graphics 2024_Regressions](https://github.com/csae-coders-corner/Moving-window-regressions-using-MATLAB/assets/148211163/601d2ea7-dce7-4e8c-a463-0831e47710ef)
+
 # Moving-window-regressions-using-MATLAB
 Spatial data has a lot of potential applications and can be a highly relevant tool for economists. While working with spatial data in the past, I have found moving window regressions a helpful tool to analyze data. MATLAB is has great functionality when working with spatial data and that’s what I have used here. 
 
