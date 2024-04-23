@@ -10,14 +10,17 @@ I am going to walk you through the steps of running a moving window regression u
 
 First, let us set the working directory and load the data set. 
 
+```
 clear
 cd('/MATLAB Drive/Published')
 load lab6_data_AustraliaRainfall.mat**
+```
 
 Second, we plot the mean annual rainfall in both January and June. We compute the mean annual rainfall by taking the means across the 3rd dimension (in this case, “year”) of the rainfall array, since we want the mean across years.
 
 **%Plotting average rainfall for January and June 
 
+```
 figure
 
 subplot(1,2,1);
@@ -63,7 +66,7 @@ colorbar;
 box off; 
 
 print('-djpeg100','Jan_Jun_Avg_Rainfall');
-
+```
 
 ![Window 1](https://github.com/csae-coders-corner/Moving-window-regressions-using-MATLAB/assets/148211163/610d13ed-eeb7-42ed-bbfa-f758e75051dd)
 
@@ -81,6 +84,7 @@ We choose a point (a,b) in the grid where rasters are located. We can think of a
 
 %Create variables for the mean annual rainfall
 
+```
 Average_rainfall_Jan = mean(AUSrain.rainfall(:,:,:,1), 3, 'omitnan'); 
 
 Average_rainfall_June = mean(AUSrain.rainfall(:,:,:,6), 3, 'omitnan');
@@ -88,9 +92,10 @@ Average_rainfall_June = mean(AUSrain.rainfall(:,:,:,6), 3, 'omitnan');
 R1= Average_rainfall_Jan;
 
 R2 = Average_rainfall_June ;
+```
 
 % Size of window
-
+```
 s = 5 ; 
 
 obs = ((s*2)+1) * ((s*2)+1) ; % needed to reshape the data below
@@ -116,11 +121,13 @@ beta(i,j) = coef(2,1); %saving the betas
 end
 
 end
+```
 
 %create a new dataset with a "lat", "lon" and corresponding "beta"
 
+```
 betafield = struct ('beta', beta, 'lat', AUSrain.lat, 'lon', AUSrain.lon);
-
+```
 
 Note, when you run the above code you may notice that you get an error that says "Warning: X is rank deficient to within machine precision". This means that, for some of the local regressions there isn't enough data to estimate the equation. Don’t panic, this is simply because we include points in the ocean In the regression above.
 
@@ -128,6 +135,7 @@ In our dataset, there is no rainfall data for the oceans (ocean pixels have valu
 
 %create a new dataset with a "lat", "lon" and corresponding "beta"
 
+```
 field = struct ('beta', beta, 'lat', AUSrain.lat, 'lon', AUSrain.lon);**
 
 %mask out the oceans 
@@ -156,12 +164,13 @@ end**
 
 
 field.betafinal = field.beta .* *land;
-
+```
 
 Lastly, we plot the beta coefficients across space. Note, we only plot the beta coefficients for “land” where we have data. The points on the ratser which are ocean are coded as “NaN” and plotted as dark blue in the map below.  
 
 %plot beta coeff
 
+```
 figure;
 
 imagesc(field.lon, field.lat, field.betafinal)
@@ -179,7 +188,7 @@ caxis ([-1 3]);
 colorbar ;
 
 print('-djpeg100','Moving Window Regression Coefficients');
-
+```
 
 ![Window 2](https://github.com/csae-coders-corner/Moving-window-regressions-using-MATLAB/assets/148211163/49e20941-51a0-456a-a506-3ecc94ec7171)
 
