@@ -13,7 +13,7 @@ First, let us set the working directory and load the data set.
 ```
 clear
 cd('/MATLAB Drive/Published')
-load lab6_data_AustraliaRainfall.mat**
+load lab6_data_AustraliaRainfall.mat
 ```
 
 Second, we plot the mean annual rainfall in both January and June. We compute the mean annual rainfall by taking the means across the 3rd dimension (in this case, “year”) of the rainfall array, since we want the mean across years.
