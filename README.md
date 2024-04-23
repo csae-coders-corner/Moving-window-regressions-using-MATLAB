@@ -18,7 +18,7 @@ load lab6_data_AustraliaRainfall.mat**
 
 Second, we plot the mean annual rainfall in both January and June. We compute the mean annual rainfall by taking the means across the 3rd dimension (in this case, “year”) of the rainfall array, since we want the mean across years.
 
-**%Plotting average rainfall for January and June 
+### Plotting average rainfall for January and June 
 
 ```
 figure
@@ -80,9 +80,9 @@ We estimate α  and  β for every point (lon, lat) on the raster. We assume a wi
 
 We choose a point (a,b) in the grid where rasters are located. We can think of a raster as a 2 dimensional grid. Using these rasters, we select the window around our point (a,b). The size of the window depends on how many pixels around the point (a,b) we want to consider in each local regression. We then reshape the data to be able to use it in an OLS regression. We then estimate a linear regression with a constant term using a subset of our data. For each subset, we extract a slope coefficient “beta”. We save the beta corresponding to the point (a,b). Then, we repeat the above steps for every point in the raster. By varying the size of the window we can vary the area around (a,b) that we consider for each local regression. We use a window of size 5, which means we have ((5*2+1)^2) = 121 points in each local regression.
 
-% Running the moving window regressions 
+## Running the moving window regressions 
 
-%Create variables for the mean annual rainfall
+### Create variables for the mean annual rainfall
 
 ```
 Average_rainfall_Jan = mean(AUSrain.rainfall(:,:,:,1), 3, 'omitnan'); 
@@ -94,7 +94,7 @@ R1= Average_rainfall_Jan;
 R2 = Average_rainfall_June ;
 ```
 
-% Size of window
+### Size of window
 ```
 s = 5 ; 
 
@@ -123,7 +123,7 @@ end
 end
 ```
 
-%create a new dataset with a "lat", "lon" and corresponding "beta"
+### Create a new dataset with a "lat", "lon" and corresponding "beta"
 
 ```
 betafield = struct ('beta', beta, 'lat', AUSrain.lat, 'lon', AUSrain.lon);
@@ -133,7 +133,7 @@ Note, when you run the above code you may notice that you get an error that says
 
 In our dataset, there is no rainfall data for the oceans (ocean pixels have values of zero across months and years). So, the oceans have rainfall = 0 but we have calculated beta coefficients for ocean pixels too. So since we are regressing across zeroes, it gives the above error for all ocean points. Hence, we need to mask out the ocean so we don’t falsely show a relationship between January and June rainfall for a pixel that is really just a zero. We do this below.
 
-%create a new dataset with a "lat", "lon" and corresponding "beta"
+### Create a new dataset with a "lat", "lon" and corresponding "beta"
 
 ```
 field = struct ('beta', beta, 'lat', AUSrain.lat, 'lon', AUSrain.lon);**
@@ -160,7 +160,7 @@ for i = 1:length(AUSrain.lat)
        
    end
    
-end**
+end
 
 
 field.betafinal = field.beta .* *land;
@@ -168,7 +168,7 @@ field.betafinal = field.beta .* *land;
 
 Lastly, we plot the beta coefficients across space. Note, we only plot the beta coefficients for “land” where we have data. The points on the ratser which are ocean are coded as “NaN” and plotted as dark blue in the map below.  
 
-%plot beta coeff
+### Plot beta coeff
 
 ```
 figure;
